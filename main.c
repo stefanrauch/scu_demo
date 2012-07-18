@@ -8,6 +8,7 @@
 #include "ownet.h"
 #include "findtype.h"
 #include "temp42.h"
+#include "eep43.h"
 
 #define MAXDEVICES 10 
 #define ONEWIRE_PORT 0 
@@ -35,6 +36,7 @@ void scu_init()
 	uchar read_buffer[32];
 	uchar write_buffer[32];
 
+	owInit();
 	uart_init();
 	uart_write_string("SCU\n");
  
@@ -56,10 +58,10 @@ void scu_init()
            mprintf("(%d) ", j++);
            DisplaySerialNum(FamilySN[i-1]);
            if (FamilySN[i-1][0] == 0x43) {
-//		if(!Write43(portnum, FamilySN[i-1], &write_buffer))
+//		if(!Write43(portnum, FamilySN[i-1], write_buffer))
 //			mprintf("write failed!\n");
 	  	owLevel(portnum, MODE_NORMAL); 
-		if (ReadMem43(portnum, FamilySN[i-1], &read_buffer))
+		if (ReadMem43(portnum, FamilySN[i-1], read_buffer))
 		{
 			for(cnt = 0; cnt < 32; cnt++)
 			{

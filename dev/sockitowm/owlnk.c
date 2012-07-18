@@ -41,14 +41,10 @@
 
 #include "board.h"
 
-//#define S_OVD 1 
-//#define S_PWR 0 
 #define S_IEN 0
 #define S_OVD_E 1
-//#define CLK_DIV_NOR CPU_CLOCK/357     //clock divider for normal mode
-//#define CLK_DIV_OVD CPU_CLOCK/1008    //clock divider for overdrive mode
-#define CLK_DIV_NOR 624
-#define CLK_DIV_OVD 124
+#define CLK_DIV_NOR (CPU_CLOCK/200-1)
+#define CLK_DIV_OVD (CPU_CLOCK/1000-1)
 
 // exportable link-level functions
 SMALLINT owTouchReset(int);
@@ -59,7 +55,6 @@ SMALLINT owReadByte(int);
 SMALLINT owSpeed(int,SMALLINT);
 SMALLINT owLevel(int,SMALLINT);
 SMALLINT owProgramPulse(int);
-//void msDelay(int);
 long msGettick(void);
 SMALLINT owWriteBytePower(int,SMALLINT);
 SMALLINT owReadBytePower(int);

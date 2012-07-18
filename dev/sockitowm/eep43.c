@@ -1,4 +1,7 @@
 #include "ownet.h"
+#include "uart.h"
+#include "eep43.h"
+
 
 #define READ_SCRATCH_CMD 0xaa
 #define WRITE_SCRATCH_CMD 0x0f
@@ -35,7 +38,6 @@ int Write43(int portnum, uchar *SerialNum, uchar *page_buffer)
 			owLevel(portnum,MODE_NORMAL);
 			owWriteBytePower(portnum, i);
 			lastcrc16 = docrc16(portnum,i);
-//			mprintf(" CRC16: %x\n", lastcrc16);
 
 		}
 		for(i = 0; i < 2; i++)			//read two bytes CRC16
@@ -60,8 +62,6 @@ int Write43(int portnum, uchar *SerialNum, uchar *page_buffer)
 int Copy2Mem43(int portnum, uchar *SerialNum)
 {
 	uchar rt=FALSE;
-	ushort lastcrc16; 
-	int i;
 	uchar read_data;
 	
 	owSerialNum(portnum, SerialNum, FALSE);
@@ -137,9 +137,6 @@ int ReadScratch43(int portnum, uchar *SerialNum, uchar *page_buffer)
 			owLevel(portnum,MODE_NORMAL);
 			page_buffer[i] = owReadBytePower(portnum);
 			lastcrc16 = docrc16(portnum, page_buffer[i]);
-		//	mprintf("send_block[%d]: %x", i, send_block[i]);
-		//	mprintf(" CRC16: %x", lastcrc16);
-		//	mprintf(" CRC16i: %x\n", ~lastcrc16);
 		}
 		
 		for(i = 0; i < 2; i++)
@@ -162,7 +159,6 @@ int ReadMem43(int portnum, uchar *SerialNum, uchar *page_buffer)
 	uchar rt=FALSE;
 	ushort lastcrc16; 
 	int i;
-	ushort target_addr = 0;
 	uchar read_data;
 	
 	owSerialNum(portnum, SerialNum, FALSE);
@@ -187,9 +183,6 @@ int ReadMem43(int portnum, uchar *SerialNum, uchar *page_buffer)
 			owLevel(portnum,MODE_NORMAL);
 			page_buffer[i] = owReadBytePower(portnum);
 			lastcrc16 = docrc16(portnum, page_buffer[i]);
-		//	mprintf("send_block[%d]: %x", i, send_block[i]);
-		//	mprintf(" CRC16: %x", lastcrc16);
-		//	mprintf(" CRC16i: %x\n", ~lastcrc16);
 		}
 		
 		for(i = 0; i < 2; i++)
