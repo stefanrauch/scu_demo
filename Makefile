@@ -1,5 +1,5 @@
 CC      := lm32-elf-gcc
-CFLAGS  := -fdata-sections -ffunction-sections -Wall -mmultiply-enabled -mbarrel-shift-enabled -nostdlib  -Os -Iinclude -Iinclude/sockitowm -DCPU_CLOCK=62500 -Wl,--gc-sections
+CFLAGS  := -fdata-sections -ffunction-sections -Wall -mmultiply-enabled -mbarrel-shift-enabled -nostdlib  -Os -Iinclude -Iinclude/sockitowm -DCPU_CLOCK=125000 -Wl,--gc-sections
 
 scu_demo.bin: scu_demo.elf
 	lm32-elf-objcopy -O binary $< $@

@@ -13,10 +13,12 @@
 
 #define MAXDEVICES 10 
 #define ONEWIRE_PORT 0 
+#define LED_REG 0x200
 
 void _irq_entry(void) {}
 void DisplaySerialNum(uchar sn[8]);
 static volatile int* pio_reg = BASE_PIO;
+static volatile char* scu_master = BASE_SCUB;
 static int done_err[24] = {0};
 
 void msDelay(int msecs) {
@@ -40,6 +42,7 @@ void scu_init()
 
   owInit();
   uart_init();
+  return ;
   //use port number for 1-wire
   uchar portnum = ONEWIRE_PORT;
   j = 0;
@@ -136,23 +139,35 @@ int addErrorBits() {
   return 0;
 }
 
-int main()
-{
-  int i = 0;
+int main() {
+  int j;
+  uint16_t i = 1;
+  short val; 
+  volatile uint16_t* regs;
+  int slave_nr;  
   scu_init();
+ 
+
+ // regs = scu_master;
+ // regs[6] = 0xfff; //select all slaves
+
+
+  regs = scu_master + (0x9 << 17); //slave number 
   
-  while(1) {
-    i++;
-    *(pio_reg + 1) = 1; // reset the prbs test
-    *(pio_reg + 1) = 0;
-  //  *(pio_reg + 2) = 0x0; //serial loopback
-    usleep(2);         // wait for test loop to finish 
-    addErrorBits();
-    if (i > 1000) {
-      m_term_clear();
-      printValues();
-      i = 0;
+   mprintf("testing...\n");
+ 
+  while (1) { 
+    for(slave_nr = 1; slave_nr <= 12; slave_nr++) {
+      regs = scu_master + (slave_nr  << 17);
+      regs[0x200] = i;
+      pio_reg[0] = i;
     }
+    if (i == 0 )
+      i = 1;
+    else
+      i *= 2;
+    
+    usleep(50);
   }
 
   return 0;
