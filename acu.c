@@ -14,6 +14,7 @@
 #define MAXDEVICES 10 
 #define ONEWIRE_PORT 0 
 #define LED_REG 0x200
+#define IFK_SETVAL 0x810
 
 void _irq_entry(void) {}
 void DisplaySerialNum(uchar sn[8]);
@@ -154,25 +155,19 @@ int main() {
  // regs[6] = 0xfff; //select all slaves
 
 
-  regs = scu_master + (0x9 << 17); //slave number 
+  //regs = scu_master + (0x9 << 17); //slave number 
   
-   mprintf("testing...\n");
+  mprintf("testing...\n");
  
   while (1) { 
-    for(slave_nr = 1; slave_nr <= 12; slave_nr++) {
-      regs = scu_master + (slave_nr  << 17);
-      regs[0x200] = i;
-      pio_reg[0] = i;
-    }
-    if (i == 1 || i == (1 << 15))
-      dir = !dir;
+    regs = scu_master + (1  << 17);
+    regs[IFK_SETVAL] = i;
+    pio_reg[0] = i;
+
+
+    i++;
     
-    if (!dir)
-       i *= 2;  
-    else
-        i /= 2;
-    
-    usleep(50);
+    ////usleep(50);
   }
 
   return 0;

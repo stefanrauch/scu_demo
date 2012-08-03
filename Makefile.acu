@@ -1,0 +1,11 @@
+CC      := lm32-elf-gcc
+CFLAGS  := -fdata-sections -ffunction-sections -Wall -mmultiply-enabled -mbarrel-shift-enabled -nostdlib  -Os -Iinclude -Iinclude/sockitowm -DCPU_CLOCK=125000 -Wl,--gc-sections
+
+scu_acu.bin: scu_acu.elf
+	lm32-elf-objcopy -O binary $< $@
+
+scu_acu.elf: irq.o crt0.o acu.o dev/uart.o dev/mprintf.o dev/sockitowm/crcutil.o dev/sockitowm/ownet.o dev/sockitowm/owtran.o dev/sockitowm/owlnk.o dev/sockitowm/findtype.o dev/sockitowm/temp42.o dev/sockitowm/eep43.o	
+	$(CC) $(CFLAGS) -o $@ -T linker.ld $^
+
+clean:
+	rm -f *.o dev/*.o dev/sockitowm/*.o *.elf *.bin
